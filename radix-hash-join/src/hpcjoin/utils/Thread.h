@@ -15,8 +15,7 @@ namespace utils {
 class Thread {
 
 public:
-
-		static void pin(uint32_t coreId);
+  static void pin(uint32_t coreId);
 };
 
 } /* namespace utils */

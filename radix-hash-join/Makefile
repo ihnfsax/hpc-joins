@@ -65,16 +65,27 @@ all: program
 
 ########################################
 
+# $(BUILD_FOLER)/%.o:  $(SOURCE_FILES) $(HEADER_FILES)
+# 	mkdir -p $(BUILD_FOLER)
+# 	mkdir -p $(BUILD_DIRECTORIES)
+# 	$(MPI_FOLDER)/bin/mpic++ $(COMPILER_FLAGS) -c $(SOURCE_FOLDER)/$*.cpp -I $(SOURCE_FOLDER) -I $(PAPI_FOLDER) -o $(BUILD_FOLER)/$*.o
+
 $(BUILD_FOLER)/%.o:  $(SOURCE_FILES) $(HEADER_FILES)
 	mkdir -p $(BUILD_FOLER)
 	mkdir -p $(BUILD_DIRECTORIES)
-	$(MPI_FOLDER)/bin/mpic++ $(COMPILER_FLAGS) -c $(SOURCE_FOLDER)/$*.cpp -I $(SOURCE_FOLDER) -I $(PAPI_FOLDER) -o $(BUILD_FOLER)/$*.o
+	mpic++ $(COMPILER_FLAGS) -c $(SOURCE_FOLDER)/$*.cpp -I $(SOURCE_FOLDER) -o $(BUILD_FOLER)/$*.o
+
 
 ########################################
 
+# program: $(OBJECT_FILES)
+# 	mkdir -p $(RELEASE_FOLDER)
+# 	$(MPI_FOLDER)/bin/mpic++ $(OBJECT_FILES) $(COMPILER_FLAGS) -L $(PAPI_FOLDER) -o $(RELEASE_FOLDER)/$(PROJECT_NAME)
+# 	make public
+
 program: $(OBJECT_FILES)
 	mkdir -p $(RELEASE_FOLDER)
-	$(MPI_FOLDER)/bin/mpic++ $(OBJECT_FILES) $(COMPILER_FLAGS) -L $(PAPI_FOLDER) -o $(RELEASE_FOLDER)/$(PROJECT_NAME)
+	mpic++ $(OBJECT_FILES) $(COMPILER_FLAGS) -o $(RELEASE_FOLDER)/$(PROJECT_NAME)
 	make public
 	
 

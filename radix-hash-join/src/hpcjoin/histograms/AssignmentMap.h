@@ -17,23 +17,22 @@ namespace histograms {
 class AssignmentMap {
 
 public:
-
-	AssignmentMap(uint32_t numberOfNodes, hpcjoin::histograms::GlobalHistogram *innerRelationGlobalHistogram, hpcjoin::histograms::GlobalHistogram *outerRelationGlobalHistogram);
-	~AssignmentMap();
+  AssignmentMap(
+      uint32_t numberOfNodes,
+      hpcjoin::histograms::GlobalHistogram *innerRelationGlobalHistogram,
+      hpcjoin::histograms::GlobalHistogram *outerRelationGlobalHistogram);
+  ~AssignmentMap();
 
 public:
-
-	void computePartitionAssignment();
-	uint32_t *getPartitionAssignment();
+  void computePartitionAssignment();
+  uint32_t *getPartitionAssignment();
 
 protected:
+  uint32_t numberOfNodes;
+  hpcjoin::histograms::GlobalHistogram *innerRelationGlobalHistogram;
+  hpcjoin::histograms::GlobalHistogram *outerRelationGlobalHistogram;
 
-	uint32_t numberOfNodes;
-	hpcjoin::histograms::GlobalHistogram *innerRelationGlobalHistogram;
-	hpcjoin::histograms::GlobalHistogram *outerRelationGlobalHistogram;
-
-	uint32_t *assignment;
-
+  uint32_t *assignment;
 };
 
 } /* namespace histograms */

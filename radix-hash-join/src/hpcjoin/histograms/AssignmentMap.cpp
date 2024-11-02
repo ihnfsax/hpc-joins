@@ -14,43 +14,38 @@
 namespace hpcjoin {
 namespace histograms {
 
-AssignmentMap::AssignmentMap(uint32_t numberOfNodes, hpcjoin::histograms::GlobalHistogram *innerRelationGlobalHistogram, hpcjoin::histograms::GlobalHistogram *outerRelationGlobalHistogram) {
+AssignmentMap::AssignmentMap(
+    uint32_t numberOfNodes,
+    hpcjoin::histograms::GlobalHistogram *innerRelationGlobalHistogram,
+    hpcjoin::histograms::GlobalHistogram *outerRelationGlobalHistogram) {
 
-	this->numberOfNodes = numberOfNodes;
-	this->innerRelationGlobalHistogram = innerRelationGlobalHistogram;
-	this->outerRelationGlobalHistogram = outerRelationGlobalHistogram;
-	this->assignment = (uint32_t *) calloc(hpcjoin::core::Configuration::NETWORK_PARTITIONING_COUNT, sizeof(uint32_t));
-
+  this->numberOfNodes = numberOfNodes;
+  this->innerRelationGlobalHistogram = innerRelationGlobalHistogram;
+  this->outerRelationGlobalHistogram = outerRelationGlobalHistogram;
+  this->assignment = (uint32_t *)calloc(
+      hpcjoin::core::Configuration::NETWORK_PARTITIONING_COUNT,
+      sizeof(uint32_t));
 }
 
-AssignmentMap::~AssignmentMap() {
-
-	free(this->assignment);
-
-}
+AssignmentMap::~AssignmentMap() { free(this->assignment); }
 
 void AssignmentMap::computePartitionAssignment() {
 
 #ifdef MEASUREMENT_DETAILS_HISTOGRAM
-	hpcjoin::performance::Measurements::startHistogramAssignmentComputation();
+  hpcjoin::performance::Measurements::startHistogramAssignmentComputation();
 #endif
 
-	for(uint32_t p=0; p<hpcjoin::core::Configuration::NETWORK_PARTITIONING_COUNT; ++p) {
-		assignment[p] = p % this->numberOfNodes;
-	}
+  for (uint32_t p = 0;
+       p < hpcjoin::core::Configuration::NETWORK_PARTITIONING_COUNT; ++p) {
+    assignment[p] = p % this->numberOfNodes;
+  }
 
 #ifdef MEASUREMENT_DETAILS_HISTOGRAM
-	hpcjoin::performance::Measurements::stopHistogramAssignmentComputation();
+  hpcjoin::performance::Measurements::stopHistogramAssignmentComputation();
 #endif
-
 }
 
-uint32_t* AssignmentMap::getPartitionAssignment() {
-
-	return this->assignment;
-
-}
+uint32_t *AssignmentMap::getPartitionAssignment() { return this->assignment; }
 
 } /* namespace histograms */
 } /* namespace hpcjoin */
-

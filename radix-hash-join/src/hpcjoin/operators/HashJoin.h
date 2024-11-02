@@ -7,12 +7,11 @@
 #ifndef OPERATORS_JOIN_H_
 #define OPERATORS_JOIN_H_
 
-#include <stdint.h>
 #include <queue>
+#include <stdint.h>
 
 #include <hpcjoin/data/Relation.h>
 #include <hpcjoin/tasks/Task.h>
-
 
 namespace hpcjoin {
 namespace operators {
@@ -20,28 +19,24 @@ namespace operators {
 class HashJoin {
 
 public:
-
-	HashJoin(uint32_t numberOfNodes, uint32_t nodeId, hpcjoin::data::Relation *innerRelation, hpcjoin::data::Relation *outerRelation);
-	~HashJoin();
+  HashJoin(uint32_t numberOfNodes, uint32_t nodeId,
+           hpcjoin::data::Relation *innerRelation,
+           hpcjoin::data::Relation *outerRelation);
+  ~HashJoin();
 
 public:
-
-	void join();
+  void join();
 
 protected:
+  uint32_t numberOfNodes;
+  uint32_t nodeId;
 
-	uint32_t numberOfNodes;
-	uint32_t nodeId;
-
-	hpcjoin::data::Relation *innerRelation;
-	hpcjoin::data::Relation *outerRelation;
+  hpcjoin::data::Relation *innerRelation;
+  hpcjoin::data::Relation *outerRelation;
 
 public:
-
-	static uint64_t RESULT_COUNTER;
-	static std::queue<hpcjoin::tasks::Task *> TASK_QUEUE;
-
-
+  static uint64_t RESULT_COUNTER;
+  static std::queue<hpcjoin::tasks::Task *> TASK_QUEUE;
 };
 
 } /* namespace operators */

@@ -15,21 +15,17 @@ namespace histograms {
 class LocalHistogram {
 
 public:
-
-	LocalHistogram(hpcjoin::data::Relation *relation);
-	~LocalHistogram();
+  LocalHistogram(hpcjoin::data::Relation *relation);
+  ~LocalHistogram();
 
 public:
+  void computeLocalHistogram();
 
-	void computeLocalHistogram();
-
-	uint64_t *getLocalHistogram();
+  uint64_t *getLocalHistogram();
 
 protected:
-
-	hpcjoin::data::Relation *relation;
-	uint64_t *values;
-
+  hpcjoin::data::Relation *relation;
+  uint64_t *values;
 };
 
 } /* namespace histograms */

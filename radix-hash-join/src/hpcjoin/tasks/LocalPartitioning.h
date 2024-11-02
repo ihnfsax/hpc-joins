@@ -9,8 +9,8 @@
 
 #include <stdint.h>
 
-#include <hpcjoin/tasks/Task.h>
 #include <hpcjoin/data/CompressedTuple.h>
+#include <hpcjoin/tasks/Task.h>
 
 namespace hpcjoin {
 namespace tasks {
@@ -18,31 +18,33 @@ namespace tasks {
 class LocalPartitioning : public Task {
 
 public:
-
-	LocalPartitioning(uint64_t innerPartitionSize, hpcjoin::data::CompressedTuple *innerPartition, uint64_t outerPartitionSize, hpcjoin::data::CompressedTuple *outerPartition);
-	~LocalPartitioning();
+  LocalPartitioning(uint64_t innerPartitionSize,
+                    hpcjoin::data::CompressedTuple *innerPartition,
+                    uint64_t outerPartitionSize,
+                    hpcjoin::data::CompressedTuple *outerPartition);
+  ~LocalPartitioning();
 
 public:
-
-	void execute();
-	task_type_t getType();
-
-protected:
-
-	uint64_t innerPartitionSize;
-	hpcjoin::data::CompressedTuple *innerPartition;
-	uint64_t outerPartitionSize;
-	hpcjoin::data::CompressedTuple *outerPartition;
+  void execute();
+  task_type_t getType();
 
 protected:
+  uint64_t innerPartitionSize;
+  hpcjoin::data::CompressedTuple *innerPartition;
+  uint64_t outerPartitionSize;
+  hpcjoin::data::CompressedTuple *outerPartition;
 
-	static uint64_t *computeHistogram(hpcjoin::data::CompressedTuple *tuples, uint64_t size);
-	static uint64_t *computePrefixSum(uint64_t *histogram);
+protected:
+  static uint64_t *computeHistogram(hpcjoin::data::CompressedTuple *tuples,
+                                    uint64_t size);
+  static uint64_t *computePrefixSum(uint64_t *histogram);
 
-	static void partitionData(hpcjoin::data::CompressedTuple *input, uint64_t inputSize, hpcjoin::data::CompressedTuple *output, uint64_t *partitionOffsets, uint64_t *histogram);
+  static void partitionData(hpcjoin::data::CompressedTuple *input,
+                            uint64_t inputSize,
+                            hpcjoin::data::CompressedTuple *output,
+                            uint64_t *partitionOffsets, uint64_t *histogram);
 
-	static void streamWrite(void *to, void *from);
-
+  static void streamWrite(void *to, void *from);
 };
 
 } /* namespace tasks */

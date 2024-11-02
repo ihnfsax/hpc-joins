@@ -9,8 +9,8 @@
 
 #include <stdint.h>
 
-#include <hpcjoin/tasks/Task.h>
 #include <hpcjoin/data/CompressedTuple.h>
+#include <hpcjoin/tasks/Task.h>
 
 namespace hpcjoin {
 namespace tasks {
@@ -18,22 +18,21 @@ namespace tasks {
 class BuildProbe : public Task {
 
 public:
-
-	BuildProbe(uint64_t innerPartitionSize, hpcjoin::data::CompressedTuple *innerPartition, uint64_t outerPartitionSize, hpcjoin::data::CompressedTuple *outerPartition);
-	~BuildProbe();
+  BuildProbe(uint64_t innerPartitionSize,
+             hpcjoin::data::CompressedTuple *innerPartition,
+             uint64_t outerPartitionSize,
+             hpcjoin::data::CompressedTuple *outerPartition);
+  ~BuildProbe();
 
 public:
-
-	void execute();
-	task_type_t getType();
+  void execute();
+  task_type_t getType();
 
 protected:
-
-	uint64_t innerPartitionSize;
-	hpcjoin::data::CompressedTuple *innerPartition;
-	uint64_t outerPartitionSize;
-	hpcjoin::data::CompressedTuple *outerPartition;
-
+  uint64_t innerPartitionSize;
+  hpcjoin::data::CompressedTuple *innerPartition;
+  uint64_t outerPartitionSize;
+  hpcjoin::data::CompressedTuple *outerPartition;
 };
 
 } /* namespace tasks */

@@ -17,43 +17,35 @@ namespace data {
 class Relation {
 
 public:
-
-	Relation(uint64_t localSize, uint64_t globalSize);
-	~Relation();
-
-public:
-
-	uint64_t getLocalSize();
-	uint64_t getGlobalSize();
+  Relation(uint64_t localSize, uint64_t globalSize);
+  ~Relation();
 
 public:
-
-	hpcjoin::data::Tuple* getData();
+  uint64_t getLocalSize();
+  uint64_t getGlobalSize();
 
 public:
+  hpcjoin::data::Tuple *getData();
 
-	void fillUniqueValues(uint64_t startKeyValue, uint64_t startRidValue);
-	void fillModuloValues(uint64_t startKeyValue, uint64_t startRidValue, uint64_t innerRelationSize);
+public:
+  void fillUniqueValues(uint64_t startKeyValue, uint64_t startRidValue);
+  void fillModuloValues(uint64_t startKeyValue, uint64_t startRidValue,
+                        uint64_t innerRelationSize);
 
 protected:
-
-	void randomOrder();
-
-public:
-
-	void distribute(uint32_t nodeId, uint32_t numberOfNodes);
+  void randomOrder();
 
 public:
+  void distribute(uint32_t nodeId, uint32_t numberOfNodes);
 
-	void debugKeyPrint();
+public:
+  void debugKeyPrint();
 
 protected:
+  uint64_t localSize;
+  uint64_t globalSize;
 
-	uint64_t localSize;
-	uint64_t globalSize;
-
-	hpcjoin::data::Tuple *data;
-
+  hpcjoin::data::Tuple *data;
 };
 
 } /* namespace data */

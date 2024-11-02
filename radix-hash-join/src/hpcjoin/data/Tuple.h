@@ -15,10 +15,8 @@ namespace data {
 class Tuple {
 
 public:
-
-	uint64_t key;
-	uint64_t rid;
-
+  uint64_t key;
+  uint64_t rid;
 };
 
 } /* namespace data */

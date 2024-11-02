@@ -9,9 +9,9 @@
 
 #include <stdint.h>
 
-#include <hpcjoin/histograms/LocalHistogram.h>
-#include <hpcjoin/histograms/GlobalHistogram.h>
 #include <hpcjoin/histograms/AssignmentMap.h>
+#include <hpcjoin/histograms/GlobalHistogram.h>
+#include <hpcjoin/histograms/LocalHistogram.h>
 
 namespace hpcjoin {
 namespace histograms {
@@ -19,37 +19,34 @@ namespace histograms {
 class OffsetMap {
 
 public:
-
-	OffsetMap(uint32_t numberOfProcesses, hpcjoin::histograms::LocalHistogram *localHistogram, hpcjoin::histograms::GlobalHistogram *globalHistogram, hpcjoin::histograms::AssignmentMap *assignment);
-	~OffsetMap();
-
-public:
-
-	void computeOffsets();
+  OffsetMap(uint32_t numberOfProcesses,
+            hpcjoin::histograms::LocalHistogram *localHistogram,
+            hpcjoin::histograms::GlobalHistogram *globalHistogram,
+            hpcjoin::histograms::AssignmentMap *assignment);
+  ~OffsetMap();
 
 public:
+  void computeOffsets();
 
-	uint64_t *getBaseOffsets();
-	uint64_t *getRelativeWriteOffsets();
-	uint64_t *getAbsoluteWriteOffsets();
-
-protected:
-
-	void computeBaseOffsets();
-	void computeRelativePrivateOffsets();
-	void computeAbsolutePrivateOffsets();
+public:
+  uint64_t *getBaseOffsets();
+  uint64_t *getRelativeWriteOffsets();
+  uint64_t *getAbsoluteWriteOffsets();
 
 protected:
+  void computeBaseOffsets();
+  void computeRelativePrivateOffsets();
+  void computeAbsolutePrivateOffsets();
 
-	uint32_t numberOfProcesses;
-	hpcjoin::histograms::LocalHistogram *localHistogram;
-	hpcjoin::histograms::GlobalHistogram *globalHistogram;
-	hpcjoin::histograms::AssignmentMap *assignment;
+protected:
+  uint32_t numberOfProcesses;
+  hpcjoin::histograms::LocalHistogram *localHistogram;
+  hpcjoin::histograms::GlobalHistogram *globalHistogram;
+  hpcjoin::histograms::AssignmentMap *assignment;
 
-	uint64_t *baseOffsets;
-	uint64_t *relativeWriteOffsets;
-	uint64_t *absoluteWriteOffsets;
-
+  uint64_t *baseOffsets;
+  uint64_t *relativeWriteOffsets;
+  uint64_t *absoluteWriteOffsets;
 };
 
 } /* namespace histograms */

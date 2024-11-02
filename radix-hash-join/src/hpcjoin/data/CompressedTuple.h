@@ -4,7 +4,6 @@
  *
  */
 
-
 #ifndef HPCJOIN_DATA_COMPRESSEDTUPLE_H_
 #define HPCJOIN_DATA_COMPRESSEDTUPLE_H_
 
@@ -14,9 +13,7 @@ namespace data {
 class CompressedTuple {
 
 public:
-
-	uint64_t value;
-
+  uint64_t value;
 };
 
 } /* namespace data */

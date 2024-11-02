@@ -15,20 +15,16 @@ namespace histograms {
 class GlobalHistogram {
 
 public:
-
-	GlobalHistogram(hpcjoin::histograms::LocalHistogram *localHistogram);
-	~GlobalHistogram();
+  GlobalHistogram(hpcjoin::histograms::LocalHistogram *localHistogram);
+  ~GlobalHistogram();
 
 public:
-
-	void computeGlobalHistogram();
-	uint64_t *getGlobalHistogram();
+  void computeGlobalHistogram();
+  uint64_t *getGlobalHistogram();
 
 protected:
-
-	hpcjoin::histograms::LocalHistogram *localHistogram;
-	uint64_t *values;
-
+  hpcjoin::histograms::LocalHistogram *localHistogram;
+  uint64_t *values;
 };
 
 } /* namespace histograms */
