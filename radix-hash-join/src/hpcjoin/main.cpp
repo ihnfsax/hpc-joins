@@ -42,8 +42,8 @@ int main(int argc, char *argv[]) {
   int32_t numberOfNodes = -1;
   int32_t nodeId = -1;
 
-  MPI_Comm_size(MPI_COMM_WORLD, &numberOfNodes);
-  MPI_Comm_rank(MPI_COMM_WORLD, &nodeId);
+  MPI_Comm_size(MPI_COMM_WORLD, &numberOfNodes); // 进程数量
+  MPI_Comm_rank(MPI_COMM_WORLD, &nodeId);        // 进程排名(ID)
 
   JOIN_DEBUG("Main", "Node %d is preparing performance counters", nodeId);
   hpcjoin::performance::Measurements::init(nodeId, numberOfNodes, "experiment");
@@ -89,6 +89,7 @@ int main(int argc, char *argv[]) {
   hpcjoin::performance::Measurements::writeMetaData("LOSZ",
                                                     localOuterRelationSize);
 
+  // 分配内存，存放内表和外表的本地部分（全表分散在各进程中）
   hpcjoin::memory::Pool::allocate(
       hpcjoin::core::Configuration::ALLOCATION_FACTOR *
       (localInnerRelationSize + localOuterRelationSize) *
@@ -100,6 +101,7 @@ int main(int argc, char *argv[]) {
 
   JOIN_MEM_DEBUG("Relations created");
 
+  // 填充 key, rid
   srand(1234 + nodeId);
   innerRelation->fillUniqueValues(
       nodeId * (globalInnerRelationSize / numberOfNodes),
@@ -112,6 +114,7 @@ int main(int argc, char *argv[]) {
   // (globalOuterRelationSize / numberOfNodes), innerRelation->getLocalSize());
 
   if (numberOfNodes > 1) {
+    // 这一步好像只是把每个进程各自的数据交换了一下，不知道为什么要这么做
     innerRelation->distribute(nodeId, numberOfNodes);
     outerRelation->distribute(nodeId, numberOfNodes);
   }

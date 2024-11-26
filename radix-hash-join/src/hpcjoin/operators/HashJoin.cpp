@@ -68,8 +68,8 @@ void HashJoin::join() {
   hpcjoin::performance::Measurements::startWindowAllocation();
   hpcjoin::data::Window *innerWindow = new hpcjoin::data::Window(
       this->numberOfNodes, this->nodeId, histogramComputation->getAssignment(),
-      histogramComputation->getInnerRelationLocalHistogram(),
-      histogramComputation->getInnerRelationGlobalHistogram(),
+      histogramComputation->getInnerRelationLocalHistogram(), // 本地直方图
+      histogramComputation->getInnerRelationGlobalHistogram(), // 全局直方图
       histogramComputation->getInnerRelationBaseOffsets(),
       histogramComputation->getInnerRelationWriteOffsets());
 

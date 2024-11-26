@@ -33,6 +33,8 @@ protected:
   hpcjoin::histograms::GlobalHistogram *outerRelationGlobalHistogram;
 
   uint32_t *assignment;
+  // 一个和网络分区数量长度相同的数组。假设有 10 个分区，4 个进程，则初始化为
+  // [0, 1, 2, 3, 0, 1, 2, 3, 0, 1]，里面的数字表示第 i 个分区属于哪个进程
 };
 
 } /* namespace histograms */

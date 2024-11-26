@@ -79,7 +79,7 @@ void NetworkPartitioning::execute() {
 void NetworkPartitioning::partition(hpcjoin::data::Relation *relation,
                                     hpcjoin::data::Window *window) {
 
-  window->start();
+  window->start(); // window 是存放压缩元组窗口的句柄
 
   uint64_t const numberOfElements = relation->getLocalSize();
   hpcjoin::data::Tuple *const data = relation->getData();
@@ -87,6 +87,7 @@ void NetworkPartitioning::partition(hpcjoin::data::Relation *relation,
   // Create in-memory buffer
   uint64_t const bufferedPartitionCount =
       hpcjoin::core::Configuration::NETWORK_PARTITIONING_COUNT;
+  // 一个分区对应两个缓冲区，bufferedPartitionSize = 缓冲区大小 * 2
   uint64_t const bufferedPartitionSize =
       hpcjoin::core::Configuration::MEMORY_PARTITION_SIZE_BYTES;
   uint64_t const inMemoryBufferSize =
@@ -101,6 +102,7 @@ void NetworkPartitioning::partition(hpcjoin::data::Relation *relation,
 #endif
 
   hpcjoin::data::CompressedTuple *inMemoryBuffer = NULL;
+  // 所有分区对应缓冲区总和，按cacheline对齐
   int result =
       posix_memalign((void **)&(inMemoryBuffer),
                      NETWORK_PARTITIONING_CACHELINE_SIZE, inMemoryBufferSize);
@@ -118,7 +120,6 @@ void NetworkPartitioning::partition(hpcjoin::data::Relation *relation,
   cacheline_t
       inCacheBuffer[hpcjoin::core::Configuration::NETWORK_PARTITIONING_COUNT]
       __attribute__((aligned(NETWORK_PARTITIONING_CACHELINE_SIZE)));
-  ;
 
   JOIN_DEBUG("Network Partitioning", "Node %d is setting counter to zero",
              this->nodeId);
@@ -133,9 +134,9 @@ void NetworkPartitioning::partition(hpcjoin::data::Relation *relation,
       startNetworkPartitioningMainPartitioning();
 #endif
 
-  for (uint64_t i = 0; i < numberOfElements; ++i) {
+  for (uint64_t i = 0; i < numberOfElements; ++i) { // 对每个本地元组
 
-    // Compute partition
+    // Compute partition（计算分区 ID）
     uint32_t partitionId = HASH_BIT_MODULO(
         data[i].key,
         hpcjoin::core::Configuration::NETWORK_PARTITIONING_COUNT - 1, 0);
@@ -148,10 +149,13 @@ void NetworkPartitioning::partition(hpcjoin::data::Relation *relation,
     hpcjoin::data::CompressedTuple *cacheLine =
         (hpcjoin::data::CompressedTuple *)(inCacheBuffer + partitionId);
     // cacheLine[inCacheCounter] = data[i];
+    // 下面实际上就是在做压缩操作
     cacheLine[inCacheCounter].value =
         data[i].rid +
         ((data[i].key >> partitionBits)
          << (partitionBits + hpcjoin::core::Configuration::PAYLOAD_BITS));
+    // 怎么做到 rid 只用 PAYLOAD_BITS(27) 比特的？
+    // 这里好像默认了 rid 是唯一的且小于 27 bit 的
     ++inCacheCounter;
 
     // Check if cache line is full
@@ -164,6 +168,7 @@ void NetworkPartitioning::partition(hpcjoin::data::Relation *relation,
       char *inMemoryStreamDestination =
           PARTITION_ACCESS(partitionId) +
           (memoryCounter * NETWORK_PARTITIONING_CACHELINE_SIZE);
+      // 使用 AVX 指令进行拷贝
       streamWrite(inMemoryStreamDestination, cacheLine);
       ++memoryCounter;
 
@@ -182,6 +187,9 @@ void NetworkPartitioning::partition(hpcjoin::data::Relation *relation,
 
         // JOIN_DEBUG("Network Partitioning", "Node %d has a full memory buffer
         // %d", this->nodeId, partitionId);
+        // 假设每个缓冲区能放 1024 个 cacheline，当前 memoryCounter = 1024，
+        // 则下面的代码获取缓冲区中第 1 个 cacheline 的地址，后续会将第 1 个到第
+        // 1024 个 cacheline（就是一个缓冲区）的数据通过 MPI_Put 写入目的窗口
         hpcjoin::data::CompressedTuple *inMemoryBufferLocation =
             reinterpret_cast<hpcjoin::data::CompressedTuple *>(
                 PARTITION_ACCESS(partitionId) +
@@ -286,7 +294,7 @@ inline void NetworkPartitioning::streamWrite(void *to, void *from) {
   register __m256i *d2 = d1 + 1;
   register __m256i s2 = *(((__m256i *)from) + 1);
 
-  _mm256_stream_si256(d1, s1);
+  _mm256_stream_si256(d1, s1); // 非阻塞
   _mm256_stream_si256(d2, s2);
 
   /*

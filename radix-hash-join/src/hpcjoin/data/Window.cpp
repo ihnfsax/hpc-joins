@@ -29,6 +29,7 @@ Window::Window(uint32_t numberOfNodes, uint32_t nodeId, uint32_t *assignment,
   this->writeCounters = (uint64_t *)calloc(
       hpcjoin::core::Configuration::NETWORK_PARTITIONING_COUNT,
       sizeof(uint64_t));
+  // 窗口大小 = 分配给本进程的分区大小之和
   this->localWindowSize = computeLocalWindowSize();
 
 #ifdef USE_FOMPI
@@ -94,7 +95,7 @@ void Window::write(uint32_t partitionId, CompressedTuple *tuples,
   hpcjoin::performance::Measurements::startNetworkPartitioningWindowPut();
 #endif
 
-  uint32_t targetProcess = this->assignment[partitionId];
+  uint32_t targetProcess = this->assignment[partitionId]; // 目的
   uint64_t targetOffset =
       this->writeOffsets[partitionId] + this->writeCounters[partitionId];
 

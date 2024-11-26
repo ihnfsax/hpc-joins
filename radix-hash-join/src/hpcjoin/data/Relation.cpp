@@ -86,6 +86,7 @@ void Relation::distribute(uint32_t nodeId, uint32_t numberOfNodes) {
       (localSize - (numberOfNodes - 1) * (localSize / numberOfNodes));
   hpcjoin::data::Tuple *incomingData = (hpcjoin::data::Tuple *)calloc(
       incomingDataSize, sizeof(hpcjoin::data::Tuple));
+  // 由于除法特性，最后一个节点所分配的大小最大，这里用最大值作为分配单元
 
   for (uint32_t i = 0; i < nodeId; ++i) {
     // Receive from node i
@@ -105,6 +106,9 @@ void Relation::distribute(uint32_t nodeId, uint32_t numberOfNodes) {
              EXCHANGE_DATA_TAG, MPI_COMM_WORLD);
     memcpy(data + sectionStart, incomingData,
            sectionSize * sizeof(hpcjoin::data::Tuple));
+
+    // 假设有 n 个进程，则把本地表（已经是全部表的 1/n）划分为 n 份
+    // 第 i 个进程第 j 份数据变成第 j 个线程的第 i 份
   }
 
   for (uint32_t i = nodeId + 1; i < numberOfNodes; ++i) {
